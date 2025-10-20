@@ -1,23 +1,17 @@
 import logging
+import logging.config
 import sys
 import ddtrace
 
-# Configurar logging para arquivo e console
-logging.basicConfig(
-    level=logging.DEBUG,
-    filename='/tmp/observability-py.log',
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stdout),  # Console
-        logging.FileHandler('/tmp/observability-py.log')  # Arquivo para Datadog
-    ]
-)
-logger = logging.getLogger(__name__)
+logging.config.fileConfig('logging.ini', disable_existing_loggers=False)
+logger = logging.getLogger()
 
 ddtrace.config.service = 'Observability-PY'
 ddtrace.config.env = 'dev'
 
 with ddtrace.tracer.trace('minha-operacao'):
-    logger.info('usuario criado', extra={'user': 'Leonardo'})
-    
-    #logger.error('Algo deu errado')
+    try:
+        logger.info("Iniciando a aplicação", extra={'user': 'sistema x'})
+    except OSError as e:
+        logger.error("Ocorreu um erro: %s", e, extra={'user': 'sistema x'})
+        sys.exit(1)
