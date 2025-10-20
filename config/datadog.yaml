@@ -1,0 +1,23 @@
+apm_non_local_traffic: True
+
+logs_enabled: true
+listeners:
+  - name: docker
+config_providers:
+  - name: docker
+    polling: true
+logs_config:
+  container_collect_all: false
+  logs:
+    # Logs de containers Docker
+    - type: docker
+      image: python
+      service: Observability-PY
+      source: python
+    # Logs de arquivo da aplicação no host
+    - type: file
+      path: "/tmp/observability-py.log"
+      service: Observability-PY
+      source: python
+      sourcecategory: sourcecode
+site: datadoghq.com
